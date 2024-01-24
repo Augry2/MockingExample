@@ -9,18 +9,10 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 class EmployeesTest {
-
-
-    @Mock
-    EmployeeRepository employeeRepo = mock(EmployeeRepository.class);
-
-    @Mock
-    BankService bankService = mock(BankService.class);
 
     // testing the constructor?
 
@@ -30,6 +22,7 @@ class EmployeesTest {
 
 
 
+    // MOCKITO
     @Test
     @DisplayName("PayEmployees sets employee paid to true")
     void payEmployeesSetsEmployeePaidToTrue() {
@@ -41,21 +34,43 @@ class EmployeesTest {
 
         // when findAll is called on, then return a list with mockEmployee1 in it, you can add more employees if you need
         when(employeeRepoMock.findAll()).thenReturn(Arrays.asList(mockEmployee1));
+        employees.payEmployees();
 
-        assertThat(mockEmployee1.isPaid()).isEqualTo(false);
-        int payments = employees.payEmployees();
         assertThat(mockEmployee1.isPaid()).isEqualTo(true);
-        assertThat(payments).isEqualTo(1);
-
-
-
 
 
     }
 
+    //STUB
     @Test
     @DisplayName("payEmployees returns an int containing the number of people who got paid ")
     void payEmployeesReturnsAnIntContainingTheNumberOfPeopleWhoGotPaid() {
+        EmployeeRepository employeeRepoStub = new EmployeeRepositoryStub();
+        BankService bankServiceStub = new BankServiceStub();
+        Employees employees = new Employees(employeeRepoStub, bankServiceStub);
+
+        int numOfEmployeePaid = employees.payEmployees();
+
+        assertThat(numOfEmployeePaid).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("payEmployees can cause a runtime exception")
+    void payEmployeesCanCauseARuntimeException() {
+
+        EmployeeRepository employeeRepoMock = mock(EmployeeRepository.class);
+        BankService bankServiceMock = mock(BankService.class);
+        Employees employees = new Employees(employeeRepoMock, bankServiceMock);
+        Employee mockEmployee1 = new Employee(null, 500);
+
+        when(employeeRepoMock.findAll()).thenReturn(Arrays.asList(mockEmployee1));
+
+        doThrow(new RuntimeException("Some error message")).when(bankServiceMock).pay(null, 500);
+
+        int payments = employees.payEmployees();
+
+        assertThat(payments).isEqualTo(0);
+
 
     }
 
