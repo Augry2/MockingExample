@@ -1,8 +1,6 @@
 package com.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.internal.IterableElementComparisonStrategy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
