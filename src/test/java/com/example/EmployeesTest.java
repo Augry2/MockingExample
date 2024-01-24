@@ -71,7 +71,6 @@ class EmployeesTest {
 
         assertThat(payments).isEqualTo(0);
 
-
     }
 
 
